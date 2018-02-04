@@ -1,0 +1,9 @@
+---
+git_source_dependencies:
+        - "@Development tools"
+        - gettext-devel
+        - openssl-devel
+        - perl-CPAN
+        - perl-devel
+        - zlib-devel
+

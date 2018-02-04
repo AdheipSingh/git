@@ -1,0 +1,49 @@
+---
+ - name: INSTALL THE EPEL-REPOSITORY
+   yum:
+        name: epel-release
+        state: latest
+
+ - name: INSTALL THE PACKAGES
+   yum:
+        name: "{{ item }}"
+        state: latest
+   with_items: 
+        - "{{ git_source_dependencies }}"
+
+ - name: ADDUSER GIT
+   user: 
+        name: github
+        state: present
+
+ - name: DOWNLOAD THE GIT FILE
+   get_url:
+        url: https://www.kernel.org/pub/software/scm/git/git-{{ git_version }}.tar.gz 
+        dest: "{{ workspace }}"
+
+ - name: UNARCHIVE THE TAR FILE
+   unarchive:
+        src: "{{ workspace }}/git-{{ git_version }}.tar.gz"         
+        dest: "{{ workspace }}"
+        remote_src: yes
+
+ - name: CONFIGURE GIT
+   shell: "{{ item }}"
+   with_items:
+        - make configure
+        - ./configure --prefix=/usr/local
+        - make install
+   args:
+         chdir: "{{ workspace }}/git-{{ git_version }}"
+
+ - name: CONFIGURE GIT II
+   shell: git config --global user.name "{{ named }}"
+
+ - name: AUTHORIZED KEYS
+   authorized_key:
+        user: git
+        state: present
+        key: "{{ lookup('file', '/home/github/.ssh/id_rsa.pub') }}"
+
+
+
