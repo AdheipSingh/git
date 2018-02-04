@@ -36,14 +36,3 @@
    args:
          chdir: "{{ workspace }}/git-{{ git_version }}"
 
- - name: CONFIGURE GIT II
-   shell: git config --global user.name "{{ named }}"
-
- - name: AUTHORIZED KEYS
-   authorized_key:
-        user: git
-        state: present
-        key: "{{ lookup('file', '/home/github/.ssh/id_rsa.pub') }}"
-
-
-
